@@ -83,7 +83,7 @@ def batch_process_onset_detection(wav_path,
         score_file = join(score_path, artist_path, rn+'.csv')
 
         if not isfile(score_file):
-            print 'Score not found: ' + score_file
+            print('Score not found: ' + score_file)
             continue
 
         nested_syllable_lists, wav_file, line_list, syllables, syllable_durations, bpm, pinyins = \

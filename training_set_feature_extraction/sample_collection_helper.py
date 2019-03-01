@@ -271,7 +271,8 @@ def get_onset_in_frame_helper(recording_name, idx, lab, u_list):
     :param u_list:
     :return:
     """
-    print 'Processing feature collecting ... ' + recording_name + ' phrase ' + str(idx + 1)
+    print('Processing feature collecting ... ' + recording_name
+          + ' phrase ' + str(idx + 1))
 
     if not lab:
         times_onset = [u[0] for u in u_list[1]]
@@ -290,4 +291,3 @@ def get_onset_in_frame_helper(recording_name, idx, lab, u_list):
         frame_end = int(u_list[-1][1] / hopsize_t)
 
     return frames_onset, frame_start, frame_end
-

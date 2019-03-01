@@ -42,8 +42,9 @@ def csvScorePinyinParser(scoreFilename):
     return syllables, pinyins, syllable_durations, bpm
 
 def removePunctuation(char):
-    if len(re.findall(ur'[\u4e00-\u9fff]+', char.decode("utf8"))):
-        char = re.sub(ur"[%s]+" % puncChinese, "", char.decode("utf8"))
+    assert(type(char) == str)
+    if len(re.findall(r'[\u4e00-\u9fff]+', char)):
+        char = re.sub(r"[%s]+" % puncChinese, "", char)
     return char
 
 def generatePinyin(scoreFilename):
@@ -72,7 +73,7 @@ def generatePinyin(scoreFilename):
                     syllable_durations.append(row[1:])
                     bpm.append(row[0])
     except IOError:
-        print scoreFilename, 'not found.'
+        print(scoreFilename, 'not found.')
 
     return syllables,pinyins,syllable_durations,bpm
 

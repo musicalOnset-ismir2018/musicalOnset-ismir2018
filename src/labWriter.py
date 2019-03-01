@@ -40,9 +40,9 @@ def boundaryLabWriter(boundaryList, outputFilename, label=False):
             if label:
                 # delete Chinese punctuation
                 # print(list[2])
-                if len(re.findall(ur'[\u4e00-\u9fff]+', list[2])):
-                    syllable = re.sub(ur"[%s]+" %puncChinese, "", list[2])
-                    syllable = re.sub(ur"[%s]+" %puncChinese, "", syllable)
+                if len(re.findall(r'[\u4e00-\u9fff]+', list[2])):
+                    syllable = re.sub(r"[%s]+" %puncChinese, "", list[2])
+                    syllable = re.sub(r"[%s]+" %puncChinese, "", syllable)
                 else:
                     syllable = list[2]
                 syllable = syllable.replace(" ", "")

@@ -50,7 +50,7 @@ def batch_eval(annotation_path,
             eval_result_details_file_head = os.path.join(eval_details_path, artist_path)
 
         if not os.path.isfile(score_file):
-            print 'Score not found: ' + score_file
+            print('Score not found: ' + score_file)
             continue
 
         if annotation_path:
@@ -75,7 +75,8 @@ def batch_eval(annotation_path,
                     continue
 
                 if float(bpm[idx]):
-                    print 'Creating ground truth lab ... ' + recording_name + ' phrase ' + str(idx+1)
+                    print('Creating ground truth lab ... '
+                          + recording_name + ' phrase ' + str(idx+1))
 
                     ul = list[1]
                     firstStartTime = ul[0][0]
@@ -96,7 +97,8 @@ def batch_eval(annotation_path,
                 continue
 
             if float(bpm[idx]):
-                print 'Evaluating... ' + recording_name + ' phrase ' + str(idx+1)
+                print('Evaluating... ' + recording_name
+                      + ' phrase ' + str(idx+1))
 
                 if annotation_path:
                     ul = list[1]
@@ -108,7 +110,7 @@ def batch_eval(annotation_path,
 
                 detected_syllable_lab   = detected_lab_file_head+'_'+str(idx+1)+'.syll.lab'
                 if not os.path.isfile(detected_syllable_lab):
-                    print 'Syll lab file not found: ' + detected_syllable_lab
+                    print('Syll lab file not found: ' + detected_syllable_lab)
                     continue
 
                 # read boundary detected lab into python list
@@ -128,10 +130,16 @@ def batch_eval(annotation_path,
                 sumDeletion += numDeletion
 
                 # if numCorrect/float(numGroundtruthBoundaries) < 0.7:
-                print "Detected: {0}, Ground truth: {1}, Correct: {2}, Onset correct: {3}, " \
-                      "Offset correct: {4}, Insertion: {5}, Deletion: {6}\n".\
-                    format(numDetectedBoundaries, numGroundtruthBoundaries,numCorrect, numOnsetCorrect,
-                           numOffsetCorrect, numInsertion, numDeletion)
+                print("Detected: {0}, Ground truth: {1}, "
+                      "Correct: {2}, Onset correct: {3}, "
+                      "Offset correct: {4}, Insertion: {5}, "
+                      "Deletion: {6}\n".format(numDetectedBoundaries,
+                                               numGroundtruthBoundaries,
+                                               numCorrect,
+                                               numOnsetCorrect,
+                                               numOffsetCorrect,
+                                               numInsertion,
+                                               numDeletion))
 
     return sumDetectedBoundaries, sumGroundtruthBoundaries, sumGroundtruthPhrases, sumCorrect, sumOnsetCorrect, \
            sumOffsetCorrect, sumInsertion, sumDeletion
@@ -280,4 +288,3 @@ def eval_write_2_txt(eval_result_file_name, segSyllable_path, label=True, decodi
 
     return list_precision_onset, list_recall_onset, list_F1_onset, \
             list_precision, list_recall, list_F1
-

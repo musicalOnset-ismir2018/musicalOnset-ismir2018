@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import cPickle
+import pickle
 import gzip
 import pickle
 import os
@@ -656,4 +656,3 @@ def run_process_jingju_no_rnn(architecture):
                       full_path_scaler=full_path_scaler_no_rnn,
                       detection_results_path=detection_results_path,
                       jingju_eval_results_path=jingju_eval_results_path)
-

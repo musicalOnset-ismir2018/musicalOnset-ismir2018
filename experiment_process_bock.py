@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import cPickle
 import gzip
 import pickle
 import os
@@ -212,7 +211,7 @@ def schluter_eval_subroutine(nfolds,
                     scaler_name_0 = 'scaler_bock_temporal_' + str(ii) + '.pickle.gz'
 
                 with gzip.open(join(bock_cnn_model_path, scaler_name_0), 'rb') as f:
-                    scaler_0 = cPickle.load(f)
+                    scaler_0 = pickle.load(f)
         else:  # CRNN
             scaler_name_0 = 'scaler_bock_phrase.pkl'
             scaler_0 = pickle.load(open(join(bock_cnn_model_path, scaler_name_0), 'rb'))
@@ -477,4 +476,3 @@ def run_process_bock(architecture):
                    best_recall_precision_f1_overall=best_recall_precision_f1_overall,
                    architecture=architecture,
                    bock_results_path=bock_results_path)
-
