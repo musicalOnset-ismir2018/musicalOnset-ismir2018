@@ -1,5 +1,3 @@
-import csv
-
 def annotationCvParser(annotation_filename):
     """
     Schluter onset time annotation parser
@@ -8,9 +6,8 @@ def annotationCvParser(annotation_filename):
     """
     list_onset_time = []
     with open(annotation_filename, 'rb') as file:
-        annotation = csv.reader(file)
-        for onset_time in annotation:
-            list_onset_time.append(onset_time[0])
+        for line in file:
+            list_onset_time.append(line.strip())
     return list_onset_time
 
 
