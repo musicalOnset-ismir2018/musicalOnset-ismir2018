@@ -60,10 +60,11 @@ def batch_process_onset_detection(audio_path,
     :return:
     """
 
-    audio_filename, ground_truth_onset = wav_annotation_loader_parser(audio_path=audio_path,
-                                                                      annotation_path=annotation_path,
-                                                                      filename=filename,
-                                                                      annotationCvParser=annotationCvParser)
+    audio_filename, ground_truth_onset = wav_annotation_loader_parser(
+        audio_path=audio_path,
+        annotation_path=annotation_path,
+        filename=filename,
+        annotationCvParser=annotationCvParser)
 
     # create path to save ODF
     obs_path = join('./obs', model_name_0)

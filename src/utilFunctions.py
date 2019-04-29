@@ -42,13 +42,12 @@ def featureDereshape(feature, nlen=10):
 
 
 def getRecordings(wav_path):
-    recordings      = []
+    recordings = []
     for root, subFolders, files in os.walk(wav_path):
-            for f in files:
-                file_prefix, file_extension = os.path.splitext(f)
-                if file_prefix != '.DS_Store' and file_prefix != '_DS_Store':
-                    recordings.append(file_prefix)
-
+        for f in files:
+            file_prefix, file_extension = os.path.splitext(f)
+            if file_prefix != '.DS_Store' and file_prefix != '_DS_Store':
+                recordings.append(file_prefix)
     return recordings
 
 

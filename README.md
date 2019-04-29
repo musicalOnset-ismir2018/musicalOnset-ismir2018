@@ -5,19 +5,28 @@ This repo contains code and supplementary information for the paper:
 **Towards an efficient and deep learning model for musical onset detection**
 
 The code aims to:
+
 1. reproduce the experimental results in this work.
-2. help retrain the onset detection models mentioned in this work for your own dataset.
+2. help retrain the onset detection models mentioned in this work for
+   your own dataset.
+
 ___
 
-Below is a plot of the onset detection functions experimented in the paper. 
-* Red lines in the Mel bands plot are the ground truth syllable onset positions, 
-* those in the other plots are the detected onset positions by using 
-peak-picking onset selection method.
+Below is a plot of the onset detection functions experimented in the
+paper.
 
-For an interactive code demo to generate this plot and explore our work,
-please check our [jupyter notebook](https://goo.gl/Y5KAFC). You should be able to "open with" google colaboratory 
-in you google drive, then "open in playground" to execute it block by block. 
-The code of the demo is in the [colab_demo](https://github.com/ronggong/musical-onset-efficient) branch.
+* Red lines in the Mel bands plot are the ground truth syllable onset
+  positions,
+* those in the other plots are the detected onset positions by using
+  peak-picking onset selection method.
+
+For an interactive code demo to generate this plot and explore our
+work, please check our [jupyter notebook](https://goo.gl/Y5KAFC). You
+should be able to "open with" google colaboratory in you google drive,
+then "open in playground" to execute it block by block.  The code of
+the demo is in
+the [colab_demo](https://github.com/ronggong/musical-onset-efficient)
+branch.
 
 ![github_main](figs/github_main.png)
 
@@ -26,51 +35,76 @@ The code of the demo is in the [colab_demo](https://github.com/ronggong/musical-
 * [A.1 Install dependencies](#a1-install-dependencies)
 * [A.2 Reproduce the experiment results with pretrained models](#a2-reproduce-the-experiment-results-with-pretrained-models)
 * [A.3 General code for training data extraction](#a3-general-code-for-training-data-extraction)
-* [A.4 Specific code for jingju and Böck datasets training data extraction](#a4-specific-code-for-jingju-and-böck-datasets-training-data-extraction)  
-* [A.5 Train the models using the training data](#a5-train-the-models-using-the-training-data)  
-    
+* [A.4 Specific code for jingju and Böck datasets training data extraction](#a4-specific-code-for-jingju-and-böck-datasets-training-data-extraction)
+* [A.5 Train the models using the training data](#a5-train-the-models-using-the-training-data)
+
 [B. Supplementary information](#b-supplementary-information)
 * [B.1 Pretrained models](#b1-pretrained-models)
 * [B.2 Full results (precision, recall, F1)](#b2-full-results-precision-recall-f1)
 * [B.3 Statistical significance calculation data](#b3-statistical-significance-calculation-data)
 * [B.4 Loss curves (section 5.1 in the paper)](#b4-loss-curves-section-51-in-the-paper)
 
-[License](#license)  
+[License](#license)
 
 ## A. Code usage
+
 ## A.1 Install dependencies
-We suggest to install the dependencies in [`virtualenv`](https://virtualenv.pypa.io/en/stable/)
+
+We suggest to install the dependencies
+in [`virtualenv`](https://virtualenv.pypa.io/en/stable/)
+
 ```bash
 pip install -r requirements.txt
 ```
+
 ### A.2 Reproduce the experiment results with pretrained models
-1. Download dataset: [jingju](https://drive.google.com/open?id=17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW); Böck dataset
-is available on request (please send an email).
-2. Change `nacta_dataset_root_path`, `nacta2017_dataset_root_path` in `./src/file_path_jingju_shared.py` to
-your local jingju dataset path.
-3. Change `bock_dataset_root_path` in `./src/file_path_bock.py` to your local Böck dataset path.
-4. Download [pretrained models](https://drive.google.com/open?id=1DFB53P4Fz_ixoVFd9fMpW7nvstaK_wuA) and put
-them into `./pretrained_models` folder.
-4. Execute below command lines to reproduce jingju or Böck datasets results:
+1. Download dataset:
+   [jingju](https://drive.google.com/open?id=17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW);
+   Böck dataset is available on request (please send an email).
+2. Change `nacta_dataset_root_path`, `nacta2017_dataset_root_path` in
+   `./src/file_path_jingju_shared.py` to your local jingju dataset
+   path.
+3. Change `bock_dataset_root_path` in `./src/file_path_bock.py` to
+   your local Böck dataset path.
+4. Download
+   [pretrained models](https://drive.google.com/open?id=1DFB53P4Fz_ixoVFd9fMpW7nvstaK_wuA)
+   and put them into `./pretrained_models` folder.
+5. Execute below command lines to reproduce jingju or Böck datasets
+   results:
+
 ```bash
-python reproduce_experiment_results.py -d <string> -a <string> 
+python reproduce_experiment_results.py -d <string> -a <string>
 ```
-* `-d` dataset. It can be chosen `jingju` or `bock` 
-* `-a` architecture. It can be chosen from `baseline, relu_dense, no_dense, temporal, bidi_lstms_100, 
-bidi_lstms_200, bidi_lstms_400, 9_layers_cnn, 5_layers_cnn, pretrained, retrained, feature_extractor_a, 
+* `-d` dataset. It can be chosen `jingju` or `bock`
+* `-a` architecture. It can be chosen from `baseline, relu_dense, no_dense, temporal, bidi_lstms_100,
+bidi_lstms_200, bidi_lstms_400, 9_layers_cnn, 5_layers_cnn, pretrained, retrained, feature_extractor_a,
 feature_extractor_b`. Please read the paper to decide which experiment result you want to reproduce:
 
 ### A.3 General code for training data extraction
-In case that you want to extract the feature, label and sample weights for your own dataset:
-1. We assume that your training set audio and annotation are stored in folders `path_audio` and `path_annotation`.
-2. Your annotation should conform to either jingju or Böck annotation format. Jingju annotation is stored in
-[Praat textgrid file](http://www.fon.hum.uva.nl/praat/manual/TextGrid_file_formats.html). 
-In our [jingju textgrid annotations](https://drive.google.com/drive/folders/17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW?usp=sharing),
-two tiers are parsed: `line` and `dianSilence`; The former contains musical line (phrase) level onsets, and the latter
-contains syllable level onsets. We assume that you also annotated your audio file in this kind of hierarchical format:
-`tier_parent` and `tier_child` corresponding to `line` and `dianSilence`. Böck dataset is annotated at each onset time, 
-you can check Böck dataset's annotation in this [link](https://github.com/CPJKU/onset_db),
+
+In case that you want to extract the feature, label and sample weights
+for your own dataset:
+
+1. We assume that your training set audio and annotation are stored in
+   folders `path_audio` and `path_annotation`.
+
+2. Your annotation should conform to either jingju or Böck annotation
+   format. Jingju annotation is stored
+   in
+   [Praat textgrid file](http://www.fon.hum.uva.nl/praat/manual/TextGrid_file_formats.html).
+
+In our
+[jingju textgrid annotations](https://drive.google.com/drive/folders/17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW?usp=sharing),
+two tiers are parsed: `line` and `dianSilence`; The former contains
+musical line (phrase) level onsets, and the latter contains syllable
+level onsets. We assume that you also annotated your audio file in
+this kind of hierarchical format: `tier_parent` and `tier_child`
+corresponding to `line` and `dianSilence`. Böck dataset is annotated
+at each onset time, you can check Böck dataset's annotation in
+this [link](https://github.com/CPJKU/onset_db),
+
 3. Run below command line to extract training data for your dataset:
+
 ```bash
 python ./trainingSetFeatureExtraction/training_data_collection_general.py --audio <path_audio> --annotation <path_annotation> --output <path_output> --annotation_type <string, jingju or bock> --phrase <bool> --tier_parent <string e.g. line> --tier_child <string e.g. dianSilence>
 ```
@@ -78,16 +112,19 @@ python ./trainingSetFeatureExtraction/training_data_collection_general.py --audi
 * `--annotation` the annotation path.
 * `--output_path` where we want to store the output training data.
 * `--annotation_type` jingju or Böck. The type of annotation we provide to the algorithm.
-* `--phrase` decides that if you want to extract the feature at file-level. If false is selected, 
+* `--phrase` decides that if you want to extract the feature at file-level. If false is selected,
 you will get a single feature file for the entire input folder.
 * `--tier_parent` the parent tier, e.g. ling, only needed for jingju annotation type.
 * `--tier_child` the child tier, e.g. dianSilence, only needed for jingju annotation type.
 
 ### A.4 Specific code for jingju and Böck datasets training data extraction
-In case the you want to extract the feature, label and sample weights for the jingu and Böck datasets,
-we provide the easy executable code for this purpose. This script is memory-inefficient. It heavily slowed down my 
-computer after finishing the extraction. I haven't found the solution to solve this problem. If you do, please kindly 
-send me an email to tell me how. Thank you.
+
+In case the you want to extract the feature, label and sample weights
+for the jingu and Böck datasets, we provide the easy executable code
+for this purpose. This script is memory-inefficient. It heavily slowed
+down my computer after finishing the extraction. I haven't found the
+solution to solve this problem. If you do, please kindly send me an
+email to tell me how. Thank you.
 
 1. Download dataset: [jingju](https://drive.google.com/open?id=17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW); Böck dataset
 is available on request (please send an email).
@@ -102,16 +139,16 @@ python ./training_set_feature_extraction/training_data_collection_jingju.py --ph
 ```bash
 python ./training_set_feature_extraction/training_data_collection_bock.py
 ```
-* `--phrase` decides that if you want to extract the feature at file-level. If false is selected, 
+* `--phrase` decides that if you want to extract the feature at file-level. If false is selected,
 you will get a single feature file for the entire input folder. Böck dataset can only be processed
 in phrase-level.
 
 ### A.5 Train the models using the training data
-Below scripts allow you to train the model from the training data which you should have already 
+Below scripts allow you to train the model from the training data which you should have already
 extracted in step A.4.
 
 1. Extract jingju or Böck training data by following step A.4.
-2. Execute below command lines to train the models. 
+2. Execute below command lines to train the models.
 
 ```bash
 python ./training_scripts/jingju_train.py -a <string, architecture> --path_input <string> --path_output <string> --path_pretrained <string, optional>
@@ -121,8 +158,8 @@ python ./training_scripts/jingju_train.py -a <string, architecture> --path_input
 python ./training_scripts/bock_train.py -a <string, architecture> --path_input <string> --path_output <string> --path_cv <string> --path_annotation <string> --path_pretrained <string, optional>
 ```
 
-* `-a` variable can be chosen from `baseline, relu_dense, 
-no_dense, temporal, bidi_lstms_100, bidi_lstms_200, bidi_lstms_400, 9_layers_cnn, 5_layers_cnn, retrained, 
+* `-a` variable can be chosen from `baseline, relu_dense,
+no_dense, temporal, bidi_lstms_100, bidi_lstms_200, bidi_lstms_400, 9_layers_cnn, 5_layers_cnn, retrained,
 feature_extractor_a, feature_extractor_b`. `pretrained` model is not necessary to train explicitly because
 it comes from the `5_layers_cnn` model of the other datasets.
 * `--path_input` the training data path.
@@ -141,7 +178,7 @@ folder to reproduce the experiment results.
 ### B.2 Full results (precision, recall, F1)
 [Full results link](https://drive.google.com/open?id=100RKdVYwsW_WDyd6aDs0YUic84hEdwBl)
 
-In jingju folder, you will find two result files for each model. The files with the postfix name 
+In jingju folder, you will find two result files for each model. The files with the postfix name
 `_peakPickingMadmom` are the results of peak-picking onset selection method, and those with `_viterbi_nolabel` are
 score-informed HMM results. In each file, only the first 5 rows are related to the paper, others are computed by using
 other evaluation metrics.
@@ -174,11 +211,11 @@ In Böck folder, there is only one file for each model, and its format is:
 ### B.3 Statistical significance calculation data
 [link](https://drive.google.com/open?id=1B1SroQRdsqOjKexA6ICinr3hbPk_jkdZ)
 
-The files in this link contain 
+The files in this link contain
 * the jingju dataset evaluation results of 5 training times.
-* the Böck dataset evaluation results of 8 folds.  
+* the Böck dataset evaluation results of 8 folds.
 
-You can download and put these files into `./statistical_significance/data` folder. We also provide code for 
+You can download and put these files into `./statistical_significance/data` folder. We also provide code for
 the data parsing and p-value calculation. Please check `ttest_experiment.py` and `ttest_experiment_transfer.py` for
 the detail.
 

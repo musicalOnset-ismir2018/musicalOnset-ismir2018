@@ -245,8 +245,12 @@ def save_feature_label_sample_weights_onset_phrase(wav_path,
     return True
 
 
-# bock annotation format -----------------------------------------------------------------------------------------------
-def feature_label_weights_saver(path_output, filename, feature, label, sample_weights):
+# bock annotation format ------
+def feature_label_weights_saver(path_output,
+                                filename,
+                                feature,
+                                label,
+                                sample_weights):
 
     filename_feature_all = join(path_output, 'feature_' + filename + '.h5')
     h5f = h5py.File(filename_feature_all, 'w')

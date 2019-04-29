@@ -3,7 +3,7 @@ from os.path import dirname
 from parameters_schluter import varin
 from file_path_shared import feature_data_path
 
-bock_dataset_root_path = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong/onsets'
+bock_dataset_root_path = '/tmp/onsets_ISMIR_2012/'
 
 root_path = join(dirname(__file__), '..')
 
@@ -14,7 +14,7 @@ bock_audio_path = join(bock_dataset_root_path, 'audio')
 
 bock_cv_path = join(bock_dataset_root_path, 'splits')
 
-bock_annotations_path = join(bock_dataset_root_path, 'annotations')
+bock_annotations_path = join(bock_dataset_root_path, 'annotations', 'onsets')
 
 bock_feature_data_path_madmom_simpleSampleWeighting = \
     join(feature_data_path, 'bock_simpleSampleWeighting')
