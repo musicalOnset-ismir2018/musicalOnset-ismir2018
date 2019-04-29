@@ -2,8 +2,6 @@
 
 import textgridParser
 import re
-from zhon.hanzi import punctuation as puncChinese
-# from string import punctuation as puncWestern
 import os
 from labParser import lab2WordList
 

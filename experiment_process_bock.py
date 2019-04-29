@@ -181,20 +181,20 @@ def batch_process_onset_detection_phrase(audio_path,
                       detected_onsets=detected_onsets)
 
 
-def schluter_eval_subroutine(nfolds,
-                             pp_threshold,
-                             obs_cal,
-                             len_seq,
-                             architecture,
-                             bock_cv_path,
-                             bock_cnn_model_path,
-                             bock_audio_path,
-                             bock_annotations_path,
-                             bock_results_path,
-                             detection_results_path,
-                             jingju_cnn_model_path,
-                             full_path_jingju_scaler):
-
+def schluter_eval_subroutine(
+        nfolds,
+        pp_threshold,
+        obs_cal,
+        len_seq,
+        architecture,
+        bock_cv_path,
+        bock_cnn_model_path,
+        bock_audio_path,
+        bock_annotations_path,
+        bock_results_path,
+        detection_results_path,
+        jingju_cnn_model_path,
+        full_path_jingju_scaler):
     for ii in range(nfolds):
         # load scaler
         if 'bidi_lstms' not in architecture:  # not CRNN
@@ -324,19 +324,19 @@ def best_threshold_choosing(architecture,
     # step 1: first calculate ODF and save
     pp_threshold = 0.1
     _, recall_precision_f1_overall \
-        = schluter_eval_subroutine(nfolds=nfolds,
-                                   pp_threshold=pp_threshold,
-                                   obs_cal='tocal',
-                                   len_seq=len_seq,
-                                   architecture=architecture,
-                                   bock_cv_path=bock_cv_path,
-                                   bock_cnn_model_path=bock_cnn_model_path,
-                                   bock_audio_path=bock_audio_path,
-                                   bock_annotations_path=bock_annotations_path,
-                                   bock_results_path=bock_results_path,
-                                   detection_results_path=detection_results_path,
-                                   jingju_cnn_model_path=jingju_cnn_model_path,
-                                   full_path_jingju_scaler=full_path_jingju_scaler)
+        = schluter_eval_subroutine(nfolds = nfolds,
+                                   pp_threshold = pp_threshold,
+                                   obs_cal = 'tocal',
+                                   len_seq = len_seq,
+                                   architecture = architecture,
+                                   bock_cv_path = bock_cv_path,
+                                   bock_cnn_model_path = bock_cnn_model_path,
+                                   bock_audio_path = bock_audio_path,
+                                   bock_annotations_path = bock_annotations_path,
+                                   bock_results_path = bock_results_path,
+                                   detection_results_path = detection_results_path,
+                                   jingju_cnn_model_path = jingju_cnn_model_path,
+                                   full_path_jingju_scaler = full_path_jingju_scaler)
 
     if recall_precision_f1_overall[2] > best_F1:
         best_F1 = recall_precision_f1_overall[2]
@@ -431,35 +431,30 @@ def run_process_bock(architecture):
         len_seq = 200
     elif architecture == 'bidi_lstms_400':
         len_seq = 400
-    elif architecture not in ['baseline', 'no_dense', 'relu_dense', 'temporal', '9_layers_cnn', '5_layers_cnn',
-                              'pretrained', 'retrained', 'feature_extractor_a', 'feature_extractor_b']:
+    elif architecture not in ['baseline', 'no_dense',
+                              'relu_dense', 'temporal',
+                              '9_layers_cnn', '5_layers_cnn',
+                              'pretrained', 'retrained',
+                              'feature_extractor_a', 'feature_extractor_b']:
         raise ValueError('There is no such architecture %s.' % architecture)
 
     root_path = join(dirname(__file__))
 
-    # bock_dataset_root_path = '/Users/gong/Documents/MTG document/dataset/onsets'
-
-    # bock_dataset_root_path = '/datasets/MTG/projects/compmusic/jingju_datasets/bock/'
-
-    bock_dataset_root_path = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong/onsets'
-
+    bock_dataset_root_path = '/tmp/onsets_ISMIR_2012/'
     bock_audio_path = join(bock_dataset_root_path, 'audio')
-
     bock_cv_path = join(bock_dataset_root_path, 'splits')
-
     bock_annotations_path = join(bock_dataset_root_path, 'annotations')
-
-    bock_cnn_model_path = join(root_path, 'pretrained_models', 'bock', varin['sample_weighting'])
+    bock_cnn_model_path = join(root_path, 'pretrained_models',
+                               'bock', varin['sample_weighting'])
 
     detection_results_path = join(root_path, 'eval', 'results')
-
     bock_results_path = join(root_path, 'eval', 'bock', 'results')
 
     # jingju model
-    jingju_cnn_model_path = join(root_path, 'pretrained_models', 'jingju', varin['sample_weighting'])
+    jingju_cnn_model_path = join(root_path, 'pretrained_models', 'jingju',
+                                 varin['sample_weighting'])
 
     full_path_jingju_scaler = join(jingju_cnn_model_path, 'scaler_jan_no_rnn.pkl')
-
     best_th, best_recall_precision_f1_fold, best_recall_precision_f1_overall = \
         best_threshold_choosing(architecture=architecture,
                                 len_seq=len_seq,

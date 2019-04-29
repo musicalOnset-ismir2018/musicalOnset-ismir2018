@@ -5,8 +5,6 @@ import numpy as np
 from audio_preprocessing import getMFCCBands2DMadmom
 from src.labParser import lab2WordList
 from src.labWriter import onsetLabWriter
-from src.scoreParser import csvDurationScoreParser
-from src.scoreParser import csvScorePinyinParser
 from src.textgridParser import textGrid2WordList
 from src.textgridParser import wordListsParseByLines
 from src.utilFunctions import featureReshape
