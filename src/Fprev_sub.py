@@ -43,10 +43,4 @@ def Fprev_sub(x,w=2):
         xx = np.hstack((x[:,-w:], np.tile(x[:,-1], (-w,1)).transpose()))
     if w==0:
         raise ValueError("shifting frame coef can't be 0.")
-
-    # plt.figure()
-    # plt.pcolormesh(xx)
-    # plt.show()
-
     return xx
-

@@ -27,10 +27,6 @@ from parameters_schluter import *
 from schluterParser import annotationCvParser
 from utilFunctions import append_or_write
 
-# from src.file_path_bock import *
-# from src.file_path_shared import *
-
-
 def batch_process_onset_detection(audio_path,
                                   annotation_path,
                                   filename,
@@ -165,14 +161,15 @@ def batch_process_onset_detection_phrase(audio_path,
 
     obs_i = np.squeeze(obs_i)
 
-    detected_onsets = peak_picking_detected_onset_saver_schluter(pp_threshold=pp_threshold,
-                                                                 obs_i=obs_i,
-                                                                 model_name_0=model_name_0,
-                                                                 model_name_1=model_name_1,
-                                                                 filename=filename,
-                                                                 hopsize_t=hopsize_t,
-                                                                 OnsetPeakPickingProcessor=OnsetPeakPickingProcessor,
-                                                                 detection_results_path=detection_results_path)
+    detected_onsets = peak_picking_detected_onset_saver_schluter(
+        pp_threshold = pp_threshold,
+        obs_i = obs_i,
+        model_name_0 = model_name_0,
+        model_name_1 = model_name_1,
+        filename = filename,
+        hopsize_t = hopsize_t,
+        OnsetPeakPickingProcessor = OnsetPeakPickingProcessor,
+        detection_results_path = detection_results_path)
 
     if varin['plot']:
         plot_schluter(mfcc=mfcc,
@@ -193,26 +190,21 @@ def schluter_eval_subroutine(
         bock_audio_path,
         bock_annotations_path,
         bock_results_path,
-        detection_results_path,
-        jingju_cnn_model_path,
-        full_path_jingju_scaler):
+        detection_results_path):
     for ii in range(nfolds):
         # load scaler
         if 'bidi_lstms' not in architecture:  # not CRNN
             # only for jingju + schulter datasets trained model
             # scaler_name_0 = 'scaler_jan_madmom_simpleSampleWeighting_early_stopping_schluter_jingju_dataset_'
             # + str(ii)+'.pickle.gz'
-
-            if 'pretrained' in architecture:
-                scaler_0 = pickle.load(open(full_path_jingju_scaler, 'rb'))
+            assert not 'pretrained' in architecture
+            if 'temporal' in architecture:
+                scaler_name_0 = 'scaler_bock_' + str(ii) + '.pickle.gz'
             else:
-                if 'temporal' in architecture:
-                    scaler_name_0 = 'scaler_bock_' + str(ii) + '.pickle.gz'
-                else:
-                    scaler_name_0 = 'scaler_bock_temporal_' + str(ii) + '.pickle.gz'
+                scaler_name_0 = 'scaler_bock_temporal_' + str(ii) + '.pickle.gz'
 
-                with gzip.open(join(bock_cnn_model_path, scaler_name_0), 'rb') as f:
-                    scaler_0 = pickle.load(f)
+            with gzip.open(join(bock_cnn_model_path, scaler_name_0), 'rb') as f:
+                scaler_0 = pickle.load(f)
         else:  # CRNN
             scaler_name_0 = 'scaler_bock_phrase.pkl'
             scaler_0 = pickle.load(open(join(bock_cnn_model_path, scaler_name_0), 'rb'))
@@ -317,8 +309,7 @@ def best_threshold_choosing(architecture,
                             bock_annotations_path,
                             bock_results_path,
                             detection_results_path,
-                            jingju_cnn_model_path,
-                            full_path_jingju_scaler):
+                            jingju_cnn_model_path):
     """recursively search for the best threshold"""
     best_F1, best_th = 0, 0
 
@@ -335,9 +326,7 @@ def best_threshold_choosing(architecture,
                                    bock_audio_path = bock_audio_path,
                                    bock_annotations_path = bock_annotations_path,
                                    bock_results_path = bock_results_path,
-                                   detection_results_path = detection_results_path,
-                                   jingju_cnn_model_path = jingju_cnn_model_path,
-                                   full_path_jingju_scaler = full_path_jingju_scaler)
+                                   detection_results_path = detection_results_path)
 
     if recall_precision_f1_overall[2] > best_F1:
         best_F1 = recall_precision_f1_overall[2]
@@ -465,8 +454,7 @@ def run_process_bock(architecture):
                                 bock_annotations_path=bock_annotations_path,
                                 bock_results_path=bock_results_path,
                                 detection_results_path=detection_results_path,
-                                jingju_cnn_model_path=jingju_cnn_model_path,
-                                full_path_jingju_scaler=full_path_jingju_scaler)
+                                jingju_cnn_model_path=jingju_cnn_model_path)
     results_saving(best_th=best_th,
                    best_recall_precision_f1_fold=best_recall_precision_f1_fold,
                    best_recall_precision_f1_overall=best_recall_precision_f1_overall,
