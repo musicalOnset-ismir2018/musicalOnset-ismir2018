@@ -26,11 +26,13 @@ class MadmomMelbankProcessor(SequentialProcessor):
         # from madmom.features.onsets import _cnn_onset_processor_pad
 
         # define pre-processing chain
-        sig = SignalProcessor(num_channels=1, sample_rate=fs)
+        sig = SignalProcessor(num_channels=1, sample_rate = fs)
         # process the multi-resolution spec in parallel
         # multi = ParallelProcessor([])
         # for frame_size in [2048, 1024, 4096]:
-        frames = FramedSignalProcessor(frame_size=2048, hopsize=int(fs*hopsize_t))
+        frames = FramedSignalProcessor(
+            frame_size = 2048,
+            hopsize = int(fs * hopsize_t))
         stft = ShortTimeFourierTransformProcessor()  # caching FFT window
         filt = FilteredSpectrogramProcessor(
             filterbank=MelFilterbank, num_bands=80, fmin=27.5, fmax=16000,

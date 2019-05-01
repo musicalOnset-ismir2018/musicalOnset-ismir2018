@@ -41,7 +41,8 @@ def dump_feature_onset_helper(audio_path, annotation_path, fn, channel):
     times_onset = annotationCvParser(annotation_fn)
     times_onset = [float(to) for to in times_onset]
     # syllable onset frames
-    frames_onset = np.array(np.around(np.array(times_onset) / hopsize_t), dtype=int)
+    frames_onset = np.array(np.around(np.array(times_onset) / hopsize_t),
+                            dtype = int)
 
     # line start and end frames
     frame_start = 0
@@ -65,13 +66,16 @@ def feature_data_path_switcher(sampleWeighting, channel):
     return feature_path
 
 
-def feature_label_weights_saver(feature_path, fn,
-                                feature_all, label_all,
+def feature_label_weights_saver(feature_path,
+                                fn,
+                                feature_all,
+                                label_all,
                                 sample_weights):
 
-    filename_feature_all = join(feature_path, 'feature_' + fn + '.h5')
-    h5f = h5py.File(filename_feature_all, 'w')
-    h5f.create_dataset('feature_all', data=feature_all)
+    fname = join(feature_path, 'feature_' + fn + '.h5')
+    print('SAVING', fname)
+    h5f = h5py.File(fname, 'w')
+    h5f.create_dataset('feature_all', data = feature_all)
     h5f.close()
 
     pickle.dump(label_all,
@@ -97,12 +101,11 @@ def dump_feature_onset(audio_path,
     :param sampleWeighting:
     :return:
     """
-
     mfcc, frames_onset, frame_start, frame_end = \
-        dump_feature_onset_helper(audio_path=audio_path,
-                                  annotation_path=annotation_path,
-                                  fn=fn,
-                                  channel=channel)
+        dump_feature_onset_helper(audio_path,
+                                  annotation_path,
+                                  fn,
+                                  channel)
 
     if sampleWeighting == 'complicate':
         print('complicate weighting...')
@@ -133,7 +136,7 @@ def dump_feature_onset(audio_path,
 def dump_feature_onset_phrase(audio_path,
                               annotation_path,
                               fn,
-                              channel=1):
+                              channel):
     """
     dump feature, label, sample weights for each phrase
     :param audio_path:
@@ -142,14 +145,20 @@ def dump_feature_onset_phrase(audio_path,
     :param channel:
     :return:
     """
-    #print(audio_path, annotation_path)
-    # from the annotation to get feature, frame start and frame end of each line, frames_onset
+    # from the annotation to get feature, frame start and frame end of
+    # each line, frames_onset
     mfcc, frames_onset, frame_start, frame_end \
-        = dump_feature_onset_helper(audio_path, annotation_path, fn, channel)
+        = dump_feature_onset_helper(audio_path,
+                                    annotation_path,
+                                    fn,
+                                    channel)
 
     # simple sample weighting
     mfcc_line, label, sample_weights = \
-        feature_onset_phrase_label_sample_weights(frames_onset, frame_start, frame_end, mfcc)
+        feature_onset_phrase_label_sample_weights(frames_onset,
+                                                  frame_start,
+                                                  frame_end,
+                                                  mfcc)
 
     feature_path = bock_feature_data_path_madmom_simpleSampleWeighting_phrase
     print('feature path', feature_path)
@@ -158,7 +167,11 @@ def dump_feature_onset_phrase(audio_path,
         os.makedirs(feature_path)
 
     # save feature, label and weights
-    feature_label_weights_saver(feature_path, fn, mfcc_line, label, sample_weights)
+    feature_label_weights_saver(feature_path,
+                                fn,
+                                mfcc_line,
+                                label,
+                                sample_weights)
 
     return mfcc_line
 
@@ -180,23 +193,22 @@ if __name__ == '__main__':
         default='true',
         help="whether to collect feature for each phrase")
     args = parser.parse_args()
+    assert(args.phrase)
+    mfcc_line_all = []
+    for fn in getRecordings(bock_annotations_path):
+        mfcc_line = dump_feature_onset_phrase(
+            bock_audio_path,
+            bock_annotations_path,
+            fn,
+            1)
+        mfcc_line_all.append(mfcc_line)
 
-    if args.phrase:
-        mfcc_line_all = []
-        #print(getRecordings(bock_annotations_path))
-        for fn in getRecordings(bock_annotations_path):
-            print('fn', fn)
-            mfcc_line = dump_feature_onset_phrase(audio_path = bock_audio_path,
-                                                  annotation_path = bock_annotations_path,
-                                                  fn=fn,
-                                                  channel=1)
-            mfcc_line_all.append(mfcc_line)
+    mfcc_line_all = np.concatenate(mfcc_line_all)
 
-        mfcc_line_all = np.concatenate(mfcc_line_all)
+    scaler = preprocessing.StandardScaler()
 
-        scaler = preprocessing.StandardScaler()
+    scaler.fit(mfcc_line_all)
 
-        scaler.fit(mfcc_line_all)
-
-        pickle.dump(scaler, open(join(bock_feature_data_path_madmom_simpleSampleWeighting_phrase,
-                                      'scaler_bock_phrase.pkl'), 'wb'))
+    pickle.dump(scaler, open(
+        join(bock_feature_data_path_madmom_simpleSampleWeighting_phrase,
+             'scaler_bock_phrase.pkl'), 'wb'))

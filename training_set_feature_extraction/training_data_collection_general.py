@@ -294,7 +294,6 @@ def dump_feature_label_sample_weights_onset_phrase_bock(audio_path,
     :param path_output:
     :return:
     """
-
     log_mel_line_all = []
     for fn in getRecordings(annotation_path):
 
@@ -303,10 +302,17 @@ def dump_feature_label_sample_weights_onset_phrase_bock(audio_path,
 
         # simple sample weighting
         feature, label, sample_weights = \
-            feature_onset_phrase_label_sample_weights(frames_onset, frame_start, frame_end, log_mel)
+            feature_onset_phrase_label_sample_weights(frames_onset,
+                                                      frame_start,
+                                                      frame_end,
+                                                      log_mel)
 
         # save feature, label and weights
-        feature_label_weights_saver(path_output, fn, feature, label, sample_weights)
+        feature_label_weights_saver(path_output,
+                                    fn,
+                                    feature,
+                                    label,
+                                    sample_weights)
 
         log_mel_line_all.append(feature)
 

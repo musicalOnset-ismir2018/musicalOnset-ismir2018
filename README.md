@@ -126,14 +126,14 @@ down my computer after finishing the extraction. I haven't found the
 solution to solve this problem. If you do, please kindly send me an
 email to tell me how. Thank you.
 
-1. Download dataset: [jingju](https://drive.google.com/open?id=17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW); Böck dataset
-is available on request (please send an email).
-2. Change `nacta_dataset_root_path`, `nacta2017_dataset_root_path` in `./src/file_path_jingju_shared.py` to your local jingju dataset path.
-3. Change `bock_dataset_root_path` in `./src/file_path_bock.py` to your local Böck dataset path.
-4. Change `feature_data_path` in `./src/file_path_shared.py` to your local output path.
-4. Execute below command lines to extract training data for jingju or Böck datasets:
-```bash
-python ./training_set_feature_extraction/training_data_collection_jingju.py --phrase <bool>
+-1. Download dataset: [jingju](https://drive.google.com/open?id=17mo5FuWyEHkCFRExKRLGXFcQk2n-jMEW); B<C3><B6>ck dataset
+-is available on request (please send an email).
+-2. Change `nacta_dataset_root_path`, `nacta2017_dataset_root_path` in `./src/file_path_jingju_shared.py` to your local jingju dataset path.
+-3. Change `bock_dataset_root_path` in `./src/file_path_bock.py` to your local B<C3><B6>ck dataset path.
+-4. Change `feature_data_path` in `./src/file_path_shared.py` to your local output path.
+-4. Execute below command lines to extract training data for jingju or B<C3><B6>ck datasets:
+-```bash
+-python ./training_set_feature_extraction/training_data_collection_jingju.py --phrase <bool>
 ```
 
 ```bash
