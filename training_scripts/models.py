@@ -688,8 +688,9 @@ def model_train_validation(model_0,
                            channel,
                            multi_inputs=False):
 
-    """
-    train the model with validation early stopping and retrain the model with whole training dataset
+    """train the model with validation early stopping and retrain the
+    model with whole training dataset
+
     :param model_0:
     :param batch_size:
     :param patience:
@@ -708,6 +709,7 @@ def model_train_validation(model_0,
     :param file_path_model:
     :param filename_log:
     :return:
+
     """
 
     callbacks = [ModelCheckpoint(file_path_model, monitor='val_loss', verbose=0, save_best_only=True),

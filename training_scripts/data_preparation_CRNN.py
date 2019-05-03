@@ -4,8 +4,9 @@ import numpy as np
 import csv
 import sys
 import os
+from os.path import join
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+sys.path.append(os.path.abspath(join(os.path.dirname(__file__), '../src')))
 
 from utilFunctions import featureReshape
 from utilFunctions import append_or_write
@@ -14,9 +15,10 @@ from utilFunctions import append_or_write
 def featureLabelSampleWeightsLoad(data_path, filename, scaler):
 
     # load data
-    mfcc_line_path = os.path.join(data_path, 'feature' + '_' + filename + '.h5')
-    label_path = os.path.join(data_path, 'label' + '_' + filename + '.pkl')
-    sample_weights_path = os.path.join(data_path, 'sample_weights' + '_' + filename + '.pkl')
+    mfcc_line_path = join(data_path, 'feature' + '_' + filename + '.h5')
+    label_path = join(data_path, 'label' + '_' + filename + '.pkl')
+    sample_weights_path = join(data_path,
+                               'sample_weights' + '_' + filename + '.pkl')
 
     f = h5py.File(mfcc_line_path, 'r')
     mfcc_line = f['feature_all']
