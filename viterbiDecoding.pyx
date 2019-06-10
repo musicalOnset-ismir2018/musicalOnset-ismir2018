@@ -1,3 +1,4 @@
+# cython: language_level=2
 import numpy as np
 from scipy.stats import norm
 from src.parameters_jingju import hopsize_t

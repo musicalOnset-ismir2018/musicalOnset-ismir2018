@@ -513,26 +513,8 @@ def model_train(model_0, batch_size, patience, input_shape,
                 indices_all, Y_train_validation, sample_weights, class_weights,
                 file_path_model, filename_log):
 
-    """
-    train the model with validation early stopping and retrain the model with whole training dataset
-    :param model_0:
-    :param batch_size:
-    :param patience:
-    :param input_shape:
-    :param path_feature_data:
-    :param indices_train:
-    :param Y_train:
-    :param sample_weights_train:
-    :param indices_validation:
-    :param Y_validation:
-    :param sample_weights_validation:
-    :param indices_all:
-    :param Y_train_validation:
-    :param sample_weights:
-    :param class_weights:
-    :param file_path_model:
-    :param filename_log:
-    :return:
+    """train the model with validation early stopping and retrain the
+    model with whole training dataset
     """
 
     model_0.save_weights(basename(file_path_model))
@@ -706,8 +688,9 @@ def model_train_validation(model_0,
                            channel,
                            multi_inputs=False):
 
-    """
-    train the model with validation early stopping and retrain the model with whole training dataset
+    """train the model with validation early stopping and retrain the
+    model with whole training dataset
+
     :param model_0:
     :param batch_size:
     :param patience:
@@ -726,6 +709,7 @@ def model_train_validation(model_0,
     :param file_path_model:
     :param filename_log:
     :return:
+
     """
 
     callbacks = [ModelCheckpoint(file_path_model, monitor='val_loss', verbose=0, save_best_only=True),
@@ -907,8 +891,12 @@ def train_model_validation(filename_train_validation_set,
                            patience,
                            input_shape,
                            filename_train_validation_set,
-                           filenames_train, Y_train, sample_weights_train,
-                           filenames_validation, Y_validation, sample_weights_validation,
+                           filenames_train,
+                           Y_train,
+                           sample_weights_train,
+                           filenames_validation,
+                           Y_validation,
+                           sample_weights_validation,
                            class_weights,
                            file_path_model,
                            filename_log,
@@ -967,4 +955,3 @@ def finetune_model_validation(filename_train_validation_set,
                            filename_log,
                            channel,
                            multi_inputs=multi_inputs)
-

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import cPickle
 import gzip
 import pickle
 import os
@@ -27,10 +26,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "../src/"))
 from parameters_schluter import *
 from schluterParser import annotationCvParser
 from utilFunctions import append_or_write
-
-# from src.file_path_bock import *
-# from src.file_path_shared import *
-
 
 def batch_process_onset_detection(audio_path,
                                   annotation_path,
@@ -61,10 +56,11 @@ def batch_process_onset_detection(audio_path,
     :return:
     """
 
-    audio_filename, ground_truth_onset = wav_annotation_loader_parser(audio_path=audio_path,
-                                                                      annotation_path=annotation_path,
-                                                                      filename=filename,
-                                                                      annotationCvParser=annotationCvParser)
+    audio_filename, ground_truth_onset = wav_annotation_loader_parser(
+        audio_path=audio_path,
+        annotation_path=annotation_path,
+        filename=filename,
+        annotationCvParser=annotationCvParser)
 
     # create path to save ODF
     obs_path = join('./obs', model_name_0)
@@ -165,14 +161,15 @@ def batch_process_onset_detection_phrase(audio_path,
 
     obs_i = np.squeeze(obs_i)
 
-    detected_onsets = peak_picking_detected_onset_saver_schluter(pp_threshold=pp_threshold,
-                                                                 obs_i=obs_i,
-                                                                 model_name_0=model_name_0,
-                                                                 model_name_1=model_name_1,
-                                                                 filename=filename,
-                                                                 hopsize_t=hopsize_t,
-                                                                 OnsetPeakPickingProcessor=OnsetPeakPickingProcessor,
-                                                                 detection_results_path=detection_results_path)
+    detected_onsets = peak_picking_detected_onset_saver_schluter(
+        pp_threshold = pp_threshold,
+        obs_i = obs_i,
+        model_name_0 = model_name_0,
+        model_name_1 = model_name_1,
+        filename = filename,
+        hopsize_t = hopsize_t,
+        OnsetPeakPickingProcessor = OnsetPeakPickingProcessor,
+        detection_results_path = detection_results_path)
 
     if varin['plot']:
         plot_schluter(mfcc=mfcc,
@@ -182,37 +179,32 @@ def batch_process_onset_detection_phrase(audio_path,
                       detected_onsets=detected_onsets)
 
 
-def schluter_eval_subroutine(nfolds,
-                             pp_threshold,
-                             obs_cal,
-                             len_seq,
-                             architecture,
-                             bock_cv_path,
-                             bock_cnn_model_path,
-                             bock_audio_path,
-                             bock_annotations_path,
-                             bock_results_path,
-                             detection_results_path,
-                             jingju_cnn_model_path,
-                             full_path_jingju_scaler):
-
+def schluter_eval_subroutine(
+        nfolds,
+        pp_threshold,
+        obs_cal,
+        len_seq,
+        architecture,
+        bock_cv_path,
+        bock_cnn_model_path,
+        bock_audio_path,
+        bock_annotations_path,
+        bock_results_path,
+        detection_results_path):
     for ii in range(nfolds):
         # load scaler
         if 'bidi_lstms' not in architecture:  # not CRNN
             # only for jingju + schulter datasets trained model
             # scaler_name_0 = 'scaler_jan_madmom_simpleSampleWeighting_early_stopping_schluter_jingju_dataset_'
             # + str(ii)+'.pickle.gz'
-
-            if 'pretrained' in architecture:
-                scaler_0 = pickle.load(open(full_path_jingju_scaler, 'rb'))
+            assert not 'pretrained' in architecture
+            if 'temporal' in architecture:
+                scaler_name_0 = 'scaler_bock_' + str(ii) + '.pickle.gz'
             else:
-                if 'temporal' in architecture:
-                    scaler_name_0 = 'scaler_bock_' + str(ii) + '.pickle.gz'
-                else:
-                    scaler_name_0 = 'scaler_bock_temporal_' + str(ii) + '.pickle.gz'
+                scaler_name_0 = 'scaler_bock_temporal_' + str(ii) + '.pickle.gz'
 
-                with gzip.open(join(bock_cnn_model_path, scaler_name_0), 'rb') as f:
-                    scaler_0 = cPickle.load(f)
+            with gzip.open(join(bock_cnn_model_path, scaler_name_0), 'rb') as f:
+                scaler_0 = pickle.load(f)
         else:  # CRNN
             scaler_name_0 = 'scaler_bock_phrase.pkl'
             scaler_0 = pickle.load(open(join(bock_cnn_model_path, scaler_name_0), 'rb'))
@@ -317,27 +309,24 @@ def best_threshold_choosing(architecture,
                             bock_annotations_path,
                             bock_results_path,
                             detection_results_path,
-                            jingju_cnn_model_path,
-                            full_path_jingju_scaler):
+                            jingju_cnn_model_path):
     """recursively search for the best threshold"""
     best_F1, best_th = 0, 0
 
     # step 1: first calculate ODF and save
     pp_threshold = 0.1
     _, recall_precision_f1_overall \
-        = schluter_eval_subroutine(nfolds=nfolds,
-                                   pp_threshold=pp_threshold,
-                                   obs_cal='tocal',
-                                   len_seq=len_seq,
-                                   architecture=architecture,
-                                   bock_cv_path=bock_cv_path,
-                                   bock_cnn_model_path=bock_cnn_model_path,
-                                   bock_audio_path=bock_audio_path,
-                                   bock_annotations_path=bock_annotations_path,
-                                   bock_results_path=bock_results_path,
-                                   detection_results_path=detection_results_path,
-                                   jingju_cnn_model_path=jingju_cnn_model_path,
-                                   full_path_jingju_scaler=full_path_jingju_scaler)
+        = schluter_eval_subroutine(nfolds = nfolds,
+                                   pp_threshold = pp_threshold,
+                                   obs_cal = 'tocal',
+                                   len_seq = len_seq,
+                                   architecture = architecture,
+                                   bock_cv_path = bock_cv_path,
+                                   bock_cnn_model_path = bock_cnn_model_path,
+                                   bock_audio_path = bock_audio_path,
+                                   bock_annotations_path = bock_annotations_path,
+                                   bock_results_path = bock_results_path,
+                                   detection_results_path = detection_results_path)
 
     if recall_precision_f1_overall[2] > best_F1:
         best_F1 = recall_precision_f1_overall[2]
@@ -432,35 +421,30 @@ def run_process_bock(architecture):
         len_seq = 200
     elif architecture == 'bidi_lstms_400':
         len_seq = 400
-    elif architecture not in ['baseline', 'no_dense', 'relu_dense', 'temporal', '9_layers_cnn', '5_layers_cnn',
-                              'pretrained', 'retrained', 'feature_extractor_a', 'feature_extractor_b']:
+    elif architecture not in ['baseline', 'no_dense',
+                              'relu_dense', 'temporal',
+                              '9_layers_cnn', '5_layers_cnn',
+                              'pretrained', 'retrained',
+                              'feature_extractor_a', 'feature_extractor_b']:
         raise ValueError('There is no such architecture %s.' % architecture)
 
     root_path = join(dirname(__file__))
 
-    # bock_dataset_root_path = '/Users/gong/Documents/MTG document/dataset/onsets'
-
-    # bock_dataset_root_path = '/datasets/MTG/projects/compmusic/jingju_datasets/bock/'
-
-    bock_dataset_root_path = '/media/gong/ec990efa-9ee0-4693-984b-29372dcea0d1/Data/RongGong/onsets'
-
+    bock_dataset_root_path = '/tmp/onsets_ISMIR_2012/'
     bock_audio_path = join(bock_dataset_root_path, 'audio')
-
     bock_cv_path = join(bock_dataset_root_path, 'splits')
-
     bock_annotations_path = join(bock_dataset_root_path, 'annotations')
-
-    bock_cnn_model_path = join(root_path, 'pretrained_models', 'bock', varin['sample_weighting'])
+    bock_cnn_model_path = join(root_path, 'pretrained_models',
+                               'bock', varin['sample_weighting'])
 
     detection_results_path = join(root_path, 'eval', 'results')
-
     bock_results_path = join(root_path, 'eval', 'bock', 'results')
 
     # jingju model
-    jingju_cnn_model_path = join(root_path, 'pretrained_models', 'jingju', varin['sample_weighting'])
+    jingju_cnn_model_path = join(root_path, 'pretrained_models', 'jingju',
+                                 varin['sample_weighting'])
 
     full_path_jingju_scaler = join(jingju_cnn_model_path, 'scaler_jan_no_rnn.pkl')
-
     best_th, best_recall_precision_f1_fold, best_recall_precision_f1_overall = \
         best_threshold_choosing(architecture=architecture,
                                 len_seq=len_seq,
@@ -470,11 +454,9 @@ def run_process_bock(architecture):
                                 bock_annotations_path=bock_annotations_path,
                                 bock_results_path=bock_results_path,
                                 detection_results_path=detection_results_path,
-                                jingju_cnn_model_path=jingju_cnn_model_path,
-                                full_path_jingju_scaler=full_path_jingju_scaler)
+                                jingju_cnn_model_path=jingju_cnn_model_path)
     results_saving(best_th=best_th,
                    best_recall_precision_f1_fold=best_recall_precision_f1_fold,
                    best_recall_precision_f1_overall=best_recall_precision_f1_overall,
                    architecture=architecture,
                    bock_results_path=bock_results_path)
-
